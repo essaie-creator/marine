@@ -406,32 +406,55 @@ export default function App() {
     if (!urlInput.trim()) return;
 
     setStep("fetching");
-    appendLog(`Contacting extraction server endpoints to target: ${urlInput.slice(0, 45)}...`, "info");
+    appendLog(`Sending URL to local Python AI backend for stem separation: ${urlInput.slice(0, 45)}...`, "info");
 
     try {
-      const response = await fetch("/api/analyze-link", {
+      // 1. Trigger the Python backend to download and separate the stems
+      const processResponse = await fetch("http://localhost:8000/api/process-url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: urlInput }),
       });
 
-      if (!response.ok) throw new Error("Server responded with error status.");
+      if (!processResponse.ok) throw new Error("Backend failed to process URL.");
       
-      const parsedMeta: LinkMetadata = await response.json();
+      const { job_id, filename, message } = await processResponse.json();
       setStep("analyzing");
+      appendLog(`Backend: ${message}. Fetching clean instrumental...`, "success");
+
+      // 2. Fetch the actual AI-separated audio file from the backend
+      const audioResponse = await fetch(`http://localhost:8000/api/download/${filename}`);
+      if (!audioResponse.ok) throw new Error("Failed to download the separated audio.");
       
-      setTimeout(() => {
-        setMetadata(parsedMeta);
-        setIsUsingUploadedFile(false);
-        setUploadedBuffer(null);
-        setStep("idle");
-        appendLog(`Successfully analyzed stream metadata: "${parsedMeta.title}" by ${parsedMeta.artist}`, "success");
-        appendLog(`Estimated BPM: ${parsedMeta.bpm} | Musical Scale: ${parsedMeta.key}`, "info");
-      }, 1200);
+      const arrayBuffer = await audioResponse.arrayBuffer();
+      const ctx = getAudioContext();
+      
+      setStep("overlaying");
+      appendLog("Decoding AI-separated instrumental into Web Audio API...", "info");
+
+      // 3. Decode the audio and feed it into your existing DSP chain!
+      ctx.decodeAudioData(arrayBuffer, (decodedBuffer) => {
+        setUploadedBuffer(decodedBuffer);
+        setIsUsingUploadedFile(true);
+        
+        // We can still use your Node/Express server to guess the metadata for the UI!
+        fetch("/api/analyze-link", {
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+           body: JSON.stringify({ url: urlInput }),
+        }).then(res => res.json()).then(meta => {
+           setMetadata(meta);
+        }).catch(() => {}); // Fallback to default metadata if this fails
+
+        setStep("completed");
+        appendLog(`Successfully loaded clean instrumental! Duration: ${decodedBuffer.duration.toFixed(1)}s`, "success");
+      }, (decodeError) => {
+        throw decodeError;
+      });
 
     } catch (err: any) {
-      appendLog(`Meta lookup failed: ${err.message || err}. Reverting to localized pipeline configuration.`, "warning");
       setStep("idle");
+      appendLog(`Pipeline error: ${err.message || err}. Is the Python backend running on port 8000?`, "warning");
     }
   };
 
