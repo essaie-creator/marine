@@ -207,6 +207,14 @@ export default function App() {
   const [promptInput, setPromptInput] = useState("");
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
   
+  // AI Stem Separation States
+  const [useAiSeparation, setUseAiSeparation] = useState(false);
+  const [selectedStems, setSelectedStems] = useState<string[]>(["instrumental"]);
+  const [selectedModel, setSelectedModel] = useState("demucs_fast");
+  const [normalization, setNormalization] = useState("-14.0");
+  const [outputFormat, setOutputFormat] = useState("ogg");
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  
   const [step, setStep] = useState<ProcessorStep>("idle");
   const [metadata, setMetadata] = useState<LinkMetadata>(DEFAULT_METADATA);
   const [dspConfig, setDspConfig] = useState<DspConfig>(DEFAULT_DSP);
@@ -400,12 +408,84 @@ export default function App() {
     }
   };
 
-  // URL Ingestion from form
+  // URL Ingestion from form - NOW WITH AI STEM SEPARATION
   const handleUrlAnalyse = async (e: FormEvent) => {
     e.preventDefault();
     if (!urlInput.trim()) return;
 
     setStep("fetching");
+    
+    // Check if user wants AI stem separation
+    if (useAiSeparation) {
+      appendLog(`🎵 AI Stem Separation Mode: Model=${selectedModel}, Stems=${selectedStems.join(", ")}, Format=${outputFormat}`, "info");
+      
+      try {
+        // Call Python backend for true AI vocal removal
+        const processResponse = await fetch("http://localhost:8000/api/process-url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            url: urlInput,
+            stems: selectedStems,
+            model: selectedModel,
+            normalization: normalization,
+            format: outputFormat
+          }),
+        });
+
+        if (!processResponse.ok) throw new Error("AI backend failed to process URL.");
+        
+        const { job_id, stems, message } = await processResponse.json();
+        setStep("analyzing");
+        appendLog(`✅ ${message}`, "success");
+
+        // Pick the first available stem to load into DSP chain
+        const primaryStemKey = Object.keys(stems)[0];
+        const primaryFilename = stems[primaryStemKey];
+        
+        if (!primaryFilename) throw new Error("No stems were generated.");
+
+        // Fetch the actual audio file from Python backend
+        const audioResponse = await fetch(`http://localhost:8000/api/download/${primaryFilename}`);
+        if (!audioResponse.ok) throw new Error("Failed to download separated audio.");
+        
+        const arrayBuffer = await audioResponse.arrayBuffer();
+        const ctx = getAudioContext();
+        
+        setStep("overlaying");
+        appendLog(`🎧 Decoding ${primaryStemKey} into Web Audio API...`, "info");
+
+        ctx.decodeAudioData(arrayBuffer, (decodedBuffer) => {
+          setUploadedBuffer(decodedBuffer);
+          setIsUsingUploadedFile(true);
+          setStep("completed");
+          appendLog(`✨ Successfully loaded ${primaryStemKey}! Duration: ${decodedBuffer.duration.toFixed(1)}s`, "success");
+          
+          // Also fetch metadata for UI display
+          fetch("/api/analyze-link", {
+             method: "POST",
+             headers: { "Content-Type": "application/json" },
+             body: JSON.stringify({ url: urlInput }),
+          }).then(res => res.json()).then(setMetadata).catch(() => {});
+
+        }, (decodeError) => { throw decodeError; });
+
+      } catch (err: any) {
+        setStep("idle");
+        appendLog(`❌ AI Pipeline error: ${err.message || err}`, "warning");
+        appendLog(`💡 Falling back to metadata-only mode...`, "info");
+        
+        // Fallback to metadata extraction only
+        extractMetadataOnly();
+      }
+    } else {
+      // Standard metadata extraction mode (no AI separation)
+      extractMetadataOnly();
+    }
+  };
+
+  // Helper function for metadata-only extraction
+  const extractMetadataOnly = async () => {
     appendLog(`Contacting extraction server endpoints to target: ${urlInput.slice(0, 45)}...`, "info");
 
     try {

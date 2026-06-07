@@ -1,8 +1,45 @@
-node_modules/
+```
+# Dependencies
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+.env
+.env.local
+.env.*
+.venv.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Build artifacts
 build/
 dist/
-coverage/
-.DS_Store
+*.egg
+*.egg-info/
+*.so
+*.dylib
+*.dll
+
+# Testing
+.coverage
+htmlcov/
+.coverage.*
+.cache
+.pytest_cache/
+.hypothesis/
+
+# Logs
 *.log
-.env*
-!.env.example
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+```

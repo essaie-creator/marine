@@ -1,0 +1,8 @@
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+yt-dlp==2024.3.10
+audio-separator==0.18.0
+librosa==0.10.1
+soundfile==0.12.1
+numpy==1.26.3
+python-multipart==0.0.6
