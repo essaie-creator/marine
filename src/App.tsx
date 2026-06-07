@@ -870,6 +870,122 @@ export default function App() {
                 </button>
               </form>
 
+              {/* AI Stem Separation Toggle */}
+              <div className="pt-3 pb-2">
+                <label className="flex items-center justify-between cursor-pointer group">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-10 h-6 rounded-full transition-colors ${useAiSeparation ? 'bg-blue-600' : 'bg-stone-300'} relative`}>
+                      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow-md transition-transform ${useAiSeparation ? 'left-5' : 'left-1'}`} />
+                    </div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600">AI Stem Separation</span>
+                  </div>
+                  <span className="text-[9px] text-slate-400 font-mono">{useAiSeparation ? 'ON → Downloads + Removes Vocals' : 'OFF → Metadata Only'}</span>
+                </label>
+                <input
+                  type="checkbox"
+                  checked={useAiSeparation}
+                  onChange={(e) => setUseAiSeparation(e.target.checked)}
+                  className="hidden"
+                />
+              </div>
+
+              {/* Advanced Settings Accordion (only visible when AI Stem Separation is ON) */}
+              {useAiSeparation && (
+                <div className="mt-3 border border-gray-700 rounded-lg overflow-hidden transition-all bg-gray-800/30">
+                  <button 
+                    type="button"
+                    onClick={() => setShowAdvanced(!showAdvanced)}
+                    className="w-full flex justify-between items-center p-3 bg-gray-800/50 hover:bg-gray-800/70 transition"
+                  >
+                    <span className="text-xs font-medium text-gray-300 flex items-center gap-2">
+                      <Settings2 className="w-3.5 h-3.5 text-blue-400" />
+                      Advanced Separation Settings
+                    </span>
+                    <span className={`transform transition ${showAdvanced ? 'rotate-180' : ''} text-gray-400`}>▼</span>
+                  </button>
+                  
+                  {showAdvanced && (
+                    <div className="p-4 bg-gray-900/60 space-y-4 border-t border-gray-700">
+                      {/* Stem Selection */}
+                      <div>
+                        <label className="block text-[9px] text-gray-400 mb-2 uppercase tracking-wider font-bold">Target Stems</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {["instrumental", "vocals", "drums", "bass", "guitar", "piano", "other"].map((stem) => (
+                            <button
+                              key={stem}
+                              type="button"
+                              onClick={() => {
+                                if (selectedStems.includes(stem)) {
+                                  setSelectedStems(selectedStems.filter(s => s !== stem));
+                                } else {
+                                  setSelectedStems([...selectedStems, stem]);
+                                }
+                              }}
+                              className={`px-2.5 py-1 text-[9px] rounded-full border transition font-medium ${
+                                selectedStems.includes(stem) 
+                                  ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20' 
+                                  : 'bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-500'
+                              }`}
+                            >
+                              {stem.charAt(0).toUpperCase() + stem.slice(1)}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {/* Algorithm Selection */}
+                        <div>
+                          <label className="block text-[9px] text-gray-400 mb-1.5 uppercase tracking-wider font-bold">AI Model</label>
+                          <select 
+                            value={selectedModel} 
+                            onChange={(e) => setSelectedModel(e.target.value)}
+                            className="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-white focus:ring-1 focus:ring-blue-500 outline-none"
+                          >
+                            <option value="demucs_fast">Fast (Speed)</option>
+                            <option value="demucs_high">High (Quality)</option>
+                            <option value="demucs_6stems">6-Stems (+Guitar/Piano)</option>
+                          </select>
+                        </div>
+
+                        {/* Normalization */}
+                        <div>
+                          <label className="block text-[9px] text-gray-400 mb-1.5 uppercase tracking-wider font-bold">LUFS Level</label>
+                          <select 
+                            value={normalization} 
+                            onChange={(e) => setNormalization(e.target.value)}
+                            className="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-white focus:ring-1 focus:ring-blue-500 outline-none"
+                          >
+                            <option value="-14.0">-14.0 (Suno/Udio)</option>
+                            <option value="-16.0">-16.0 (Streaming)</option>
+                            <option value="-23.0">-23.0 (Broadcast)</option>
+                            <option value="0.0">Raw (None)</option>
+                          </select>
+                        </div>
+
+                        {/* Output Format */}
+                        <div>
+                          <label className="block text-[9px] text-gray-400 mb-1.5 uppercase tracking-wider font-bold">Export Format</label>
+                          <select 
+                            value={outputFormat} 
+                            onChange={(e) => setOutputFormat(e.target.value)}
+                            className="w-full bg-gray-800 border border-gray-700 rounded px-2 py-1.5 text-xs text-white focus:ring-1 focus:ring-blue-500 outline-none"
+                          >
+                            <option value="ogg">OGG (Smallest)</option>
+                            <option value="mp3">MP3 (Compatible)</option>
+                            <option value="wav">WAV (Lossless)</option>
+                          </select>
+                        </div>
+                      </div>
+                      
+                      <p className="text-[9px] text-gray-500 italic pt-1">
+                        💡 Tip: Use 6-Stems model to isolate guitar or piano for unique sampling. OGG format provides best quality/size ratio for AI platforms.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Alternative local file uploader */}
               <div className="pt-1 flex items-center justify-between">
                 <span className="text-[9px] text-slate-400 font-mono font-bold tracking-wider uppercase">OR LOCAL OFFLINE DIGITIZER</span>
