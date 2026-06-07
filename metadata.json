@@ -1,0 +1,6 @@
+{
+  "name": "Inspiration Extractor & AI Pipeline",
+  "description": "Convert streaming links and audio files into copyright-neutral, AI-ready instrumentals with custom prompt overlays and local offline DSP processing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
