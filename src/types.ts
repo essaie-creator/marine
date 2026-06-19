@@ -33,6 +33,17 @@ export type ProcessorStep =
   | 'completed'
   | 'failed';
 
+export interface QueueItem {
+  id: string;
+  url: string;
+  status: 'pending' | 'fetching' | 'analyzing' | 'isolating' | 'completed' | 'failed';
+  metadata: LinkMetadata | null;
+  dspConfig: DspConfig | null;
+  renderedBlob: Blob | null;
+  error?: string;
+  progressMessage?: string;
+}
+
 export interface AuditLog {
   id: string;
   timestamp: string;
