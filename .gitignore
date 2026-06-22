@@ -1,8 +1,51 @@
-node_modules/
+```
+# Android build outputs
+*.apk
+*.aar
+*.aab
+*.dex
+
+# Android build directories
 build/
-dist/
-coverage/
-.DS_Store
+.gradle/
+captures/
+
+# Android Studio
+.idea/
+*.iml
+*.iws
+
+# Generated files
+gen/
+out/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Log Files
 *.log
-.env*
-!.env.example
+
+# Android cache
+.cache/
+
+# Keystore
+*.keystore
+*.jks
+
+# Proguard
+proguard/
+
+# APK Analyzer
+.apk_analysis/
+
+# Android emulator
+.avd/
+
+# Gradle
+.gradle/
+!gradle/wrapper/
+
+# Temporary files
+*.tmp
+*.temp
+```

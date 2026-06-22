@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mozenrath Mobile"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorPrimary"
+            android:gravity="center"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/subtitleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="AI Instrumental Extractor"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"
+            android:gravity="center"
+            android:layout_marginTop="4dp"/>
+
+        <!-- URL Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/urlInputLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Paste YouTube/Spotify URL"
+            android:layout_marginTop="32dp"
+            app:startIconDrawable="@android:drawable/ic_menu_search">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/urlInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textUri"
+                android:maxLines="3"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Process Button -->
+        <Button
+            android:id="@+id/processButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Process Audio"
+            android:textSize="16sp"
+            android:layout_marginTop="24dp"
+            app:icon="@android:drawable/ic_media_play"
+            app:iconGravity="textStart"/>
+
+        <!-- Progress Section -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="0"
+            android:visibility="gone"
+            android:layout_marginTop="24dp"/>
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ready to process"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginTop="16dp"/>
+
+        <!-- Preset Effects Chips -->
+        <HorizontalScrollView
+            android:id="@+id/presetsScroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="16dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/presetsLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/presetLofi"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🎵 Lofi Hip Hop"
+                    android:layout_marginEnd="8dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/presetNightcore"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚡ Nightcore"
+                    android:layout_marginEnd="8dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/presetCosmic"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🌌 Cosmic Reverb"
+                    android:layout_marginEnd="8dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/presetVinyl"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💿 Analog Warmth"
+                    android:layout_marginEnd="8dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/presetReset"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔄 Reset"
+                    android:checkable="false"/>
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <!-- Effects Controls -->
+        <LinearLayout
+            android:id="@+id/effectsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/effects_card_bg"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Audio Effects"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Reverb Control -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Reverb"
+                    android:textSize="14sp"/>
+
+                <SeekBar
+                    android:id="@+id/reverbSeekbar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:max="100"
+                    android:progress="30"/>
+
+                <TextView
+                    android:id="@+id/reverbValue"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:text="30%"
+                    android:textSize="12sp"
+                    android:gravity="end"/>
+
+            </LinearLayout>
+
+            <!-- Bass Boost Control -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Bass Boost"
+                    android:textSize="14sp"/>
+
+                <SeekBar
+                    android:id="@+id/bassSeekbar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:max="100"
+                    android:progress="20"/>
+
+                <TextView
+                    android:id="@+id/bassValue"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:text="20%"
+                    android:textSize="12sp"
+                    android:gravity="end"/>
+
+            </LinearLayout>
+
+            <!-- Vinyl Crackle Control -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Vinyl Crackle"
+                    android:textSize="14sp"/>
+
+                <SeekBar
+                    android:id="@+id/vinylSeekbar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:max="100"
+                    android:progress="0"/>
+
+                <TextView
+                    android:id="@+id/vinylValue"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:text="0%"
+                    android:textSize="12sp"
+                    android:gravity="end"/>
+
+            </LinearLayout>
+
+            <!-- Playback Speed Control -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Playback Speed"
+                    android:textSize="14sp"/>
+
+                <SeekBar
+                    android:id="@+id/speedSeekbar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:max="100"
+                    android:progress="50"/>
+
+                <TextView
+                    android:id="@+id/speedValue"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:text="1.0x"
+                    android:textSize="12sp"
+                    android:gravity="end"/>
+
+            </LinearLayout>
+
+            <!-- Apply Effects Button -->
+            <Button
+                android:id="@+id/applyEffectsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Apply Effects &amp; Export"
+                android:layout_marginTop="8dp"
+                app:icon="@android:drawable/ic_menu_save"
+                app:iconGravity="textStart"/>
+
+        </LinearLayout>
+
+        <!-- Audio Player Section -->
+        <LinearLayout
+            android:id="@+id/playerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/player_card_bg"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Preview"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:id="@+id/playerStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Processed track ready"
+                android:textSize="14sp"
+                android:textColor="@android:color/darker_gray"
+                android:layout_marginBottom="12dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageButton
+                    android:id="@+id/playPauseButton"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:src="@android:drawable/ic_media_play"
+                    android:contentDescription="Play/Pause"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
+
+                <SeekBar
+                    android:id="@+id/playerSeekbar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"/>
+
+                <TextView
+                    android:id="@+id/playerTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0:00"
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+
+            <!-- Share and Export Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/shareButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Share"
+                    android:layout_marginEnd="8dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:icon="@android:drawable/ic_menu_share"
+                    app:iconGravity="textStart"/>
+
+                <Button
+                    android:id="@+id/exportButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Export"
+                    android:layout_marginStart="8dp"
+                    app:icon="@android:drawable/ic_menu_save"
+                    app:iconGravity="textStart"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- History/Library Section -->
+        <LinearLayout
+            android:id="@+id/historyLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recent Tracks"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/historyRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="200dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
