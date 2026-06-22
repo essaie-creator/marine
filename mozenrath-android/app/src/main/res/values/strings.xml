@@ -1,6 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mozenrath</string>
-    <string name="processing">Processing...</string>
-    <string name="complete">Complete!</string>
-    <string name="error">Error occurred</string>
 </resources>

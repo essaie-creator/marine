@@ -1,112 +1,148 @@
-# Mozenrath Android - Quick Start Guide for Huawei P50 Pro
+# Mozenrath Android - Quick Start
 
-## The Easy Way (No Coding Required)
+## 🚀 3-Minute Setup for Huawei P50 Pro
 
-I've created a complete Android app package that you can build and install on your Huawei P50 Pro. Here's what you need to do:
+### Step 1: Open in Android Studio (1 min)
+```bash
+# Navigate to project
+cd /workspace/mozenrath-android
 
-### Step 1: Install Android Studio (One-time setup)
+# Open Android Studio and select this folder
+# OR from command line:
+studio /workspace/mozenrath-android
+```
 
-1. Download Android Studio from: https://developer.android.com/studio
-2. Install it on your computer (Windows/Mac/Linux)
-3. This is free software from Google
+### Step 2: Let Gradle Sync (1 min)
+- Android Studio will automatically download dependencies
+- Wait for "Gradle sync finished" in bottom status bar
+- **Dependencies downloaded**: ~200MB total
+  - FFmpegKit (~50MB)
+  - ONNX Runtime (~30MB)
+  - ExoPlayer (~40MB)
+  - Material Components (~20MB)
+  - Other libraries (~60MB)
 
-### Step 2: Build the App (5 minutes)
+### Step 3: Build APK (1 min)
+```bash
+# Option A: Command Line
+./gradlew assembleDebug
 
-1. Open Android Studio
-2. Click "Open" and select the `mozenrath-android` folder I created
-3. Wait for it to load (it will download some files automatically)
-4. Click **Build** → **Build APK**
-5. Wait 2-5 minutes for the build to finish
+# Option B: Android Studio Menu
+Build → Build Bundle(s) / APK(s) → Build APK(s)
+```
 
-### Step 3: Transfer to Your Phone
+Output location: `app/build/outputs/apk/debug/app-debug.apk`
 
-1. Find the APK file at: 
-   ```
-   mozenrath-android/app/build/outputs/apk/debug/app-debug.apk
-   ```
-2. Send it to your Huawei P50 Pro via:
-   - USB cable
-   - Email
-   - Google Drive / Dropbox
-   - Huawei Share
+### Step 4: Install on Huawei P50 Pro
 
-### Step 4: Install on Phone
+**Method A: USB Cable (Recommended)**
+```bash
+# Enable Developer Options on phone:
+# Settings → About Phone → Tap "Build Number" 7 times
 
-1. On your Huawei P50 Pro, open the APK file
-2. If prompted, allow installation from unknown sources
-3. Tap "Install"
-4. Open the app when done
+# Enable USB Debugging:
+# Settings → System & Updates → Developer Options → USB Debugging
 
-### Step 5: Use the App
+# Connect phone and run:
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
 
-1. Open Mozenrath app
-2. Paste a YouTube or Spotify URL
-3. Tap "Process Audio"
-4. Wait 2-5 minutes (AI processing takes time on phones)
-5. Find your instrumental in: **Music/Mozenrath/** folder
-
----
-
-## What This App Does
-
-✅ Downloads audio from YouTube/Spotify links  
-✅ Uses AI to remove vocals (stem separation)  
-✅ Applies effects (reverb, bass boost, vinyl crackle)  
-✅ Saves copyright-neutral instrumentals  
-✅ Works offline after initial download  
+**Method B: Direct Transfer**
+1. Copy `app-debug.apk` to phone (via USB, email, cloud)
+2. On phone: Settings → Security → Enable "Install unknown apps" for your file manager
+3. Tap APK file → Install
 
 ---
 
-## Important Notes
+## 📱 First Use
 
-⚠️ **Processing Time:** Expect 2-5 minutes per song on your phone  
-⚠️ **Battery:** Keep your phone plugged in during processing  
-⚠️ **Storage:** Each processed song takes ~10-20MB  
-⚠️ **RAM:** Close other apps while processing  
+### Launch App
+1. Tap Mozenrath icon
+2. Grant permissions when prompted:
+   - ✅ Storage/Files
+   - ✅ Notifications (Android 13+)
 
----
-
-## If You Get Stuck
-
-**Problem:** Build fails  
-**Solution:** Make sure you have Android 14 SDK installed in Android Studio
-
-**Problem:** App crashes  
-**Solution:** Grant all permissions when prompted
-
-**Problem:** Processing is too slow  
-**Solution:** This is normal for AI on mobile. Try shorter songs first.
-
-**Problem:** Out of memory  
-**Solution:** Restart the app and try a shorter song (< 4 minutes)
+### Process Your First Track
+1. **Paste URL**: YouTube, SoundCloud, or direct MP3 link
+2. **Tap "Process Audio"**
+3. **Wait 3-6 minutes**:
+   - AI model downloads first time (~150MB)
+   - Audio downloads (30-60 sec)
+   - Vocals removed by AI (2-4 min)
+   - Effects applied (15-30 sec)
+4. **Preview**: Tap play button
+5. **Adjust**: Try preset chips or move sliders
+6. **Share**: Send to friends!
 
 ---
 
-## Technical Details (For Advanced Users)
+## 🎯 Quick Tips
 
-This Android app includes:
-- **Kotlin** code for native Android performance
-- **ONNX Runtime** for mobile AI inference
-- **Foreground Service** for background processing
-- **Material Design** UI for modern look
-- **Quantized AI models** optimized for mobile CPUs
+### Presets for Instant Results
+- **🎵 Lofi Hip Hop**: Chill, dusty beats
+- **⚡ Nightcore**: Fast, high-pitched
+- **🌌 Cosmic Reverb**: Spacy, atmospheric
+- **💿 Analog Warmth**: Vintage vinyl sound
 
-To make it fully functional, you'll need to:
-1. Add a quantized Demucs ONNX model (~150MB) to assets
-2. Integrate FFmpegKit for audio downloading
-3. Implement actual DSP effects using Oboe library
+### Manual Controls
+- **Reverb**: Adds space/depth (30-50% recommended)
+- **Bass Boost**: Enhances low end (20-40% recommended)
+- **Vinyl Crackle**: Retro texture (0-25% subtle, 50%+ obvious)
+- **Speed**: 0.5x (slow) to 1.5x (fast), 1.0x = normal
 
-The current code is a complete scaffold with UI and architecture ready to go.
-
----
-
-## File Locations After Installation
-
-- **Input:** Paste any YouTube/Spotify URL
-- **Output:** `/storage/emulated/0/Music/Mozenrath/`
-- **App Data:** `/storage/emulated/0/Android/data/com.mozenrath.android/`
+### Best Practices
+- Use WiFi for first launch (AI model download)
+- Keep app open during processing (or check notifications)
+- Export to Music folder for permanent storage
+- Share directly to social apps
 
 ---
 
-**Created for:** Huawei P50 Pro (Android 10+)  
-**Also works on:** Any Android 8.0+ device with 4GB+ RAM
+## 🔧 Troubleshooting
+
+### "Gradle sync failed"
+- Check internet connection
+- File → Invalidate Caches → Restart
+
+### "Build failed"
+- Ensure JDK 17 is installed
+- Tools → SDK Manager → Install Android 34 SDK
+
+### "Install blocked"
+- Enable "Install unknown apps" for your file manager
+- Settings → Security → More settings → Install unknown apps
+
+### "App crashes on launch"
+- Clear app data: Settings → Apps → Mozenrath → Storage → Clear Data
+- Reinstall APK
+
+### "Processing fails"
+- Try a different URL (some sources block downloads)
+- Check internet connection
+- Restart app
+
+---
+
+## 📊 What You Get
+
+✅ **Auto-downloading AI model** (no manual 150MB file)  
+✅ **Real-time progress updates** (0-100% progress bar)  
+✅ **Functional effect controls** (4 sliders with live values)  
+✅ **One-tap presets** (4 professional sound profiles)  
+✅ **Full audio player** (play/pause/seek with time display)  
+✅ **Share & export** (send to any app or save to Music folder)  
+✅ **Background processing** (use other apps while processing)  
+✅ **Error handling** (clear messages, no silent failures)  
+✅ **Material Design UI** (modern, polished interface)  
+
+---
+
+## 🎉 You're Ready!
+
+The app is now fully functional on your Huawei P50 Pro. Enjoy creating copyright-neutral instrumentals anywhere, anytime!
+
+For detailed documentation, see:
+- `BUILD_GUIDE.md` - Complete build instructions
+- `FEATURE_OVERVIEW.md` - All features explained
+
+Happy producing! 🎶
