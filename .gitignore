@@ -1,8 +1,46 @@
-node_modules/
+```
+# Android build outputs
 build/
-dist/
-coverage/
-.DS_Store
+.gradle/
+*/build/
+
+# APK and AAB files
+*.apk
+*.aab
+
+# Android Studio generated files
+local.properties
+captures/
+*.keystore
+*.jks
+
+# Gradle
+.gradle/
+!.gradle/init.d/
+.gradle/daemon/
+.gradle/native/
+.gradle/wrapper/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Log files
 *.log
-.env*
-!.env.example
+
+# Environment
+.env
+.env.local
+.env.*
+
+# Temp files
+*.tmp
+*.temp
+*.swp
+
+# OS generated files
+.DS_Store
+Thumbs.db
+```
